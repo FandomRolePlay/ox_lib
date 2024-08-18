@@ -151,15 +151,76 @@ end
 ---@return boolean?
 function lib.progressBar(data)
     while progress ~= nil do Wait(0) end
-
+    if not data.disable then data.disable = { move = false, car = false, mouse = false, combat = false } end
     if not interruptProgress(data) then
-        SendNUIMessage({
-            action = 'progress',
-            data = {
+        if data.prop then
+            playerState.invBusy = true
+            exports['progressbar']:Progress({
+                name = "random_task",
+                duration = data.duration,
                 label = data.label,
-                duration = data.duration
-            }
-        })
+                useWhileDead = false,
+                canCancel = true,
+                controlDisables = {
+                    disableMovement = data.disable.move,
+                    disableCarMovement = data.disable.car,
+                    disableMouse = data.disable.mouse,
+                    disableCombat = data.disable.combat,
+                },
+                prop = {
+                    model = data.prop.model,
+                    bone = data.prop.bone,
+                    coords = {
+                        x = data.prop.pos.x,
+                        y = data.prop.pos.y,
+                        z = data.prop.pos.z
+                    },
+                    rotation = {
+                        x = data.prop.rot.x,
+                        y = data.prop.rot.y,
+                        z = data.prop.rot.z
+                    },
+                },
+            }, function(cancelled)
+                if not cancelled then
+                    progress = nil
+                    playerState.invBusy = false
+                else
+                    progress = false
+                    Citizen.Wait(1000)
+                    progress = nil
+                    playerState.invBusy = false
+                end
+            end)
+        else
+            playerState.invBusy = true
+            exports['progressbar']:Progress({
+                name = "random_task",
+                duration = data.duration,
+                label = data.label,
+                useWhileDead = false,
+                canCancel = true,
+                controlDisables = {
+                    disableMovement = data.disable.move or false,
+                    disableCarMovement = data.disable.car or false,
+                    disableMouse = data.disable.mouse or false,
+                    disableCombat = data.disable.combat or false,
+                },
+            }, function(cancelled)
+                if not cancelled then
+                    progress = nil
+                    playerState.invBusy = false
+                else
+                    progress = false
+                    Citizen.Wait(1000)
+                    progress = nil
+                    playerState.invBusy = false
+                end
+            end)
+        end
+
+
+
 
         return startProgress(data)
     end
@@ -169,16 +230,75 @@ end
 ---@return boolean?
 function lib.progressCircle(data)
     while progress ~= nil do Wait(0) end
-
     if not interruptProgress(data) then
-        SendNUIMessage({
-            action = 'circleProgress',
-            data = {
+        if data.prop then
+            playerState.invBusy = true
+            exports['progressbar']:Progress({
+                name = "random_task",
                 duration = data.duration,
-                position = data.position,
-                label = data.label
-            }
-        })
+                label = data.label,
+                useWhileDead = false,
+                canCancel = true,
+                controlDisables = {
+                    disableMovement = data.disable.move,
+                    disableCarMovement = data.disable.car,
+                    disableMouse = data.disable.mouse,
+                    disableCombat = data.disable.combat,
+                },
+                prop = {
+                    model = data.prop.model,
+                    bone = data.prop.bone,
+                    coords = {
+                        x = data.prop.pos.x,
+                        y = data.prop.pos.y,
+                        z = data.prop.pos.z
+                    },
+                    rotation = {
+                        x = data.prop.rot.x,
+                        y = data.prop.rot.y,
+                        z = data.prop.rot.z
+                    },
+                },
+            }, function(cancelled)
+                if not cancelled then
+                    progress = nil
+                    playerState.invBusy = false
+                else
+                    progress = false
+                    Citizen.Wait(1000)
+                    progress = nil
+                    playerState.invBusy = false
+                end
+            end)
+        else
+            playerState.invBusy = true
+            exports['progressbar']:Progress({
+                name = "random_task",
+                duration = data.duration,
+                label = data.label,
+                useWhileDead = false,
+                canCancel = true,
+                controlDisables = {
+                    disableMovement = data.disable.move,
+                    disableCarMovement = data.disable.car,
+                    disableMouse = data.disable.mouse,
+                    disableCombat = data.disable.combat,
+                },
+            }, function(cancelled)
+                if not cancelled then
+                    progress = nil
+                    playerState.invBusy = false
+                else
+                    progress = false
+                    Citizen.Wait(1000)
+                    progress = nil
+                    playerState.invBusy = false
+                end
+            end)
+        end
+
+
+
 
         return startProgress(data)
     end
@@ -234,22 +354,22 @@ AddStateBagChangeHandler('lib:progressProps', nil, function(bagName, key, value,
 
     local ped = GetPlayerPed(ply)
     local serverId = GetPlayerServerId(ply)
-    
+
     if not value then
         return deleteProgressProps(serverId)
     end
-    
+
     createdProps[serverId] = {}
     local playerProps = createdProps[serverId]
-    
+
     if value.model then
-        playerProps[#playerProps+1] = createProp(ped, value)
+        playerProps[#playerProps + 1] = createProp(ped, value)
     else
         for i = 1, #value do
             local prop = value[i]
 
             if prop then
-                playerProps[#playerProps+1] = createProp(ped, prop)
+                playerProps[#playerProps + 1] = createProp(ped, prop)
             end
         end
     end

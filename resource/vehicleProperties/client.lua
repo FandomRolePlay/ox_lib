@@ -333,6 +333,7 @@ function lib.setVehicleProperties(vehicle, props, fixVehicle)
 
     if props.fuelLevel then
         SetVehicleFuelLevel(vehicle, props.fuelLevel + 0.0)
+        DecorSetFloat(vehicle, '_FUEL_LEVEL', GetVehicleFuelLevel(vehicle))
     end
 
     if props.oilLevel then
