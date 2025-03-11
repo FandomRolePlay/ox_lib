@@ -1,71 +1,103 @@
 import React from 'react';
-import { Box, createStyles, Text } from '@mantine/core';
+import { Box, createStyles, Text, ThemeIcon } from '@mantine/core';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { fetchNui } from '../../utils/fetchNui';
 import ScaleFade from '../../transitions/ScaleFade';
 import type { ProgressbarProps } from '../../typings';
+import LibIcon from '../../components/LibIcon';
 
 const useStyles = createStyles((theme) => ({
-  container: {
-    width: 350,
-    height: 10,
-    borderRadius: theme.radius.sm,
-    backgroundColor: 'rgba(0, 0, 0, 0.246)',
-    overflow: 'hidden',
-  },
   wrapper: {
     width: '100%',
-    height: '20%',
+    height: '12.5%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     bottom: 0,
     position: 'absolute',
   },
+  container: {
+    width: 360,
+    height: 85,
+    borderRadius: 3,
+    background: theme.colors.basicBg[0],
+    overflow: 'hidden',
+    border: '1px solid #19212E', // Poprawiona składnia
+    
+  },
   bar: {
     height: '100%',
-    backgroundColor: '#C01616',
-    boxShadow: '0 0 10px rgba(201, 18, 18, 0.6)',
-    borderRadius: theme.radius.sm,
+    backgroundColor: '#CD2E36',
+    borderRadius: 6,
   },
-  labelWrapper: {
-    marginTop: 8,
-    position: 'absolute',
+
+  outsideBar: {
+    width: '90%',
+    height: 6,
+    background: '#0D1016',
+    borderRadius: 6,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 4,
+  },
+  
+  
+  firstRow: {
     display: 'flex',
-    width: 350,
-    height: 45,
-    alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'left',
+    alignItems: 'center',
+    marginTop: 15,
+    height: 35,
   },
+  
+  
+  labelWrapper: {
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 7,
+  },
+  
   label: {
     maxWidth: 350,
-    padding: 8,
     textOverflow: 'ellipsis',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-    fontSize: 20,
+    fontSize: 16,
     color: theme.colors.gray[3],
     textShadow: theme.shadows.sm,
+    fontWeight: 600,
   },
-  precentWrapper: {
-    marginTop: 8,
-    position: 'absolute',
+
+  imageWrapper: {
+    marginLeft: '5%',
+    width: 25,
+    height: 25,
+    background: '#0D1117',
+    borderRadius: 2,
     display: 'flex',
-    width: 340,
-    height: 45,
     alignItems: 'center',
-    justifyContent: 'right',
+    justifyContent: 'center',
   },
-  precent: {
-    maxWidth: 50,
-    padding: 8,
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    fontSize: 20,
+
+  percentWrapper: {
+    marginLeft: 'auto',
+    marginRight: '5%',
+    width: 50,
+    height: 25,
+    background: '#0D1117',
+    borderRadius: 2,
+  },
+
+  percentText: {
+    fontSize: 16,
     color: theme.colors.gray[3],
     textShadow: theme.shadows.sm,
+    textAlign: 'center',
+    fontWeight: 600,
   },
+
 }));
 
 const Progressbar: React.FC = () => {
@@ -73,58 +105,67 @@ const Progressbar: React.FC = () => {
   const [visible, setVisible] = React.useState(false);
   const [label, setLabel] = React.useState('');
   const [duration, setDuration] = React.useState(0);
-  const [elapsedTime, setElapsedTime] = React.useState(0);
-
+  const [value, setValue] = React.useState(0);
 
   useNuiEvent('progressCancel', () => setVisible(false));
 
   useNuiEvent<ProgressbarProps>('progress', (data) => {
     setVisible(true);
     setLabel(data.label);
-    setDuration(data.duration);
+    setDuration(data.duration); 
+    setValue(0);
+
+    const onePercent = data.duration * 0.01;
+    const updateProgress = setInterval(() => {
+      setValue((previousValue) => {
+        const newValue = previousValue + 1;
+        newValue >= 100 && clearInterval(updateProgress);
+        return newValue;
+      });
+    }, onePercent);
   });
-
-  React.useEffect(() => {
-    if (visible) {
-      const interval = setInterval(() => {
-        setElapsedTime((prev) => {
-          if (prev >= duration) {
-            clearInterval(interval);
-            return duration;
-          }
-          return prev + 50;
-        });
-      }, 50);
-  
-      return () => clearInterval(interval);
-    } else {
-      setElapsedTime(0); // Reset elapsed time when progress bar is hidden
-    }
-  }, [visible, duration]);
-
-  const percentage = Math.min((elapsedTime / duration) * 100, 100);
 
   return (
     <>
       <Box className={classes.wrapper}>
         <ScaleFade visible={visible} onExitComplete={() => fetchNui('progressComplete')}>
           <Box className={classes.container}>
+            
+
+            <Box className={classes.firstRow}>
+              <Box className={classes.imageWrapper}>
+              <ThemeIcon
+                radius="xl"
+                size={15}
+                sx={{ backgroundColor: "transparent" }} // Zamiast opacity={0.0}
+              >
+                <LibIcon icon='spinner' fixedWidth color={'#CD2E36'} spin />
+              </ThemeIcon>
+
+
+          
+              </Box>
               <Box className={classes.labelWrapper}>
                 <Text className={classes.label}>{label}</Text>
               </Box>
-              <Box className={classes.precentWrapper}>
-                <Text>{`${percentage.toFixed(0)}%`}</Text>
-              </Box>
 
-            <Box
-              className={classes.bar}
-              onAnimationEnd={() => setVisible(false)}
-              sx={{
-                animation: 'progress-bar linear',
-                animationDuration: `${duration}ms`,
-              }}
-            >
+              <Box className={classes.percentWrapper}>
+                <Text className={classes.percentText}>{value}%</Text>
+              </Box>
             </Box>
+
+            <Box className={classes.outsideBar}>  
+              <Box
+                className={classes.bar}
+                onAnimationEnd={() => setVisible(false)}
+                sx={{
+                  animation: 'progress-bar linear',
+                  animationDuration: `${duration}ms`,
+                }}
+              />
+            </Box>
+            
+  
           </Box>
         </ScaleFade>
       </Box>

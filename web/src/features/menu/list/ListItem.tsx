@@ -15,13 +15,16 @@ interface Props {
 
 const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
   buttonContainer: {
-    backgroundColor: theme.colors.dark[6],
-    borderRadius: theme.radius.md,
-    padding: 2,
-    height: 60,
+    background: theme.colors.basicBg[0],
+    borderRadius: 2,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: 362,
+    height: 55,
+    border: '2px solid #19212E',
     scrollMargin: 8,
     '&:focus': {
-      backgroundColor: theme.colors.dark[4],
+      background: '#222D3D',
       outline: 'none',
     },
   },
@@ -29,32 +32,49 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     maxWidth: 32,
   },
   buttonWrapper: {
-    paddingLeft: 5,
-    paddingRight: 12,
+    color: '#fff',
+    paddingLeft: 12,
+    paddingRight: 16,
     height: '100%',
   },
   iconContainer: {
     display: 'flex',
     alignItems: 'center',
-    width: 32,
-    height: 32,
+    width: 29,
+    height: 29,
   },
   icon: {
     fontSize: 24,
-    color: params.iconColor || theme.colors.dark[2],
+    color: params.iconColor || theme.colors.mainColor[0],
   },
   label: {
-    color: theme.colors.dark[2],
-    textTransform: 'uppercase',
-    fontSize: 12,
+    color: '#FCFCFC',
+    opacity: 0.5,
+    fontSize: 13,
+    letterSpacing: 1,
+    lineHeight: '12px',
+    fontWeight: 300,
+    fontFamily: 'Helvetica',
     verticalAlign: 'middle',
   },
   chevronIcon: {
-    fontSize: 14,
-    color: theme.colors.dark[2],
+    width: 18,
+    padding: 6,
+    height: 18,
+    backgroundColor: theme.colors.mainColor[0],
+    fontSize: 12,
+    color: '#fff',
   },
   scrollIndexValue: {
-    color: theme.colors.dark[2],
+    color: '#fff',
+    width: 30,
+    background: '#12151B',
+    height: 30,
+    paddingTop: 4,
+
+    justifyContent: 'center',
+
+    display: 'flex',
     textTransform: 'uppercase',
     fontSize: 14,
   },
@@ -65,6 +85,11 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
   progressLabel: {
     verticalAlign: 'middle',
     marginBottom: 3,
+  },
+
+  progressBar: {
+    height: 6,
+    background: theme.colors.basicBg[2],
   },
 }));
 
@@ -111,7 +136,7 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
             <Group spacing={1} position="center">
               <LibIcon icon="chevron-left" className={classes.chevronIcon} />
               <Text className={classes.scrollIndexValue}>
-                {scrollIndex + 1}/{item.values.length}
+                {scrollIndex + 1}
               </Text>
               <LibIcon icon="chevron-right" className={classes.chevronIcon} />
             </Group>
@@ -126,8 +151,8 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
             <Text className={classes.progressLabel}>{item.label}</Text>
             <Progress
               value={item.progress}
-              color={item.colorScheme || 'dark.0'}
-              styles={(theme) => ({ root: { backgroundColor: theme.colors.dark[3] } })}
+              color={item.colorScheme || '#CD2E36'}
+              className={classes.progressBar}
             />
           </Stack>
         ) : (

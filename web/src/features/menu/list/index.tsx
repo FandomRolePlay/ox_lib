@@ -10,11 +10,15 @@ import LibIcon from '../../../components/LibIcon';
 
 const useStyles = createStyles((theme, params: { position?: MenuPosition; itemCount: number; selected: number }) => ({
   tooltip: {
-    backgroundColor: theme.colors.dark[6],
-    color: theme.colors.dark[2],
-    borderRadius: theme.radius.sm,
+    color: '#fff',
+    borderRadius: 2,
     maxWidth: 350,
+    fontSize: 14,
+    minWidth: 140,
+    textAlign: 'center',
     whiteSpace: 'normal',
+    background: theme.colors.basicBg[0],
+    letterSpacing: 0.8,
   },
   container: {
     position: 'absolute',
@@ -26,27 +30,33 @@ const useStyles = createStyles((theme, params: { position?: MenuPosition; itemCo
     right: params.position === 'top-right' || params.position === 'bottom-right' ? 1 : undefined,
     left: params.position === 'bottom-left' ? 1 : undefined,
     bottom: params.position === 'bottom-left' || params.position === 'bottom-right' ? 1 : undefined,
-    fontFamily: 'Roboto',
-    width: 384,
+    fontFamily: 'Helvetica',
+    width: 388,
   },
   buttonsWrapper: {
     height: 'fit-content',
     maxHeight: 415,
+    width: 388,
     overflow: 'hidden',
     borderRadius: params.itemCount <= 6 || params.selected === params.itemCount - 1 ? theme.radius.md : undefined,
-    backgroundColor: theme.colors.dark[8],
+    background: theme.colors.basicBg[2],
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
   },
+
+
   scrollArrow: {
-    backgroundColor: theme.colors.dark[8],
+    backgroundColor: theme.colors.basicBg[2],
     textAlign: 'center',
-    borderBottomLeftRadius: theme.radius.md,
-    borderBottomRightRadius: theme.radius.md,
-    height: 25,
+    borderBottomLeftRadius: 2,
+    borderBottomRightRadius: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    height: 34,
   },
   scrollArrowIcon: {
-    color: theme.colors.dark[2],
+    color: '#fff',
     fontSize: 20,
   },
 }));
@@ -215,7 +225,13 @@ const ListMenu: React.FC = () => {
           transitionDuration={0}
           classNames={{ tooltip: classes.tooltip }}
         >
-          <Box className={classes.container}>
+          <Box className={classes.container} 
+              sx={{
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                },
+              }}
+          >
             <Header title={menu.title} />
             <Box className={classes.buttonsWrapper} onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => moveMenu(e)}>
               <FocusTrap active={visible}>
@@ -238,7 +254,7 @@ const ListMenu: React.FC = () => {
             </Box>
             {menu.items.length > 6 && selected !== menu.items.length - 1 && (
               <Box className={classes.scrollArrow}>
-                <LibIcon icon="chevron-down" className={classes.scrollArrowIcon} />
+                <LibIcon icon="angles-down" className={classes.scrollArrowIcon} />
               </Box>
             )}
           </Box>

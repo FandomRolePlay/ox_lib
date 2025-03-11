@@ -7,34 +7,67 @@ import tinycolor from 'tinycolor2';
 import type { NotificationProps } from '../../typings';
 import MarkdownComponents from '../../config/MarkdownComponents';
 import LibIcon from '../../components/LibIcon';
+import { describe } from 'node:test';
 
 const useStyles = createStyles((theme) => ({
   container: {
     width: 300,
-    height: 'fit-content',
-    backgroundColor: theme.colors.dark[6],
+    height: 65,
+    background: theme.colors.basicBg[1],
     color: theme.colors.dark[0],
-    padding: 12,
-    borderRadius: theme.radius.sm,
-    fontFamily: 'Roboto',
-    boxShadow: theme.shadows.sm,
+    fontFamily: 'Helvetica',
+    borderRadius: 3,
+    display: 'flex',
+    alignItems: 'left',
+    // border: '1px solid #19212E', // Poprawiona składnia
   },
+
+  iconWrapper: {
+    marginTop: 0,
+    marginLeft: 0,
+    height: 65,
+    width: 65,
+    borderRadius: '3px 0px 0px 3px',
+    background: theme.colors.darkerBg[0],
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'flex',
+    fontSize: 24,
+  },
+
   title: {
-    fontWeight: 500,
+    fontWeight: 600,
     lineHeight: 'normal',
+    fontFamily: 'Helvetica',
   },
+
   description: {
+    fontWeight: 400,
+    lineHeight: 'normal',
+    fontFamily: 'Helvetica',
+    paddingTop: 3,
     fontSize: 12,
-    color: theme.colors.dark[2],
-    fontFamily: 'Roboto',
-    lineHeight: 'normal',
+    opacity: 0.6,
   },
-  descriptionOnly: {
-    fontSize: 14,
-    color: theme.colors.dark[2],
-    fontFamily: 'Roboto',
-    lineHeight: 'normal',
+
+  textWrapper: {
+    marginLeft: 10,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
+
+  progress: {
+    marginTop: 61,
+    marginLeft: 0,
+    marginRight: 'auto',
+    position: 'absolute',
+    height: 4,
+    borderRadius: 4,
+  },
+  
 }));
 
 const createAnimation = (from: string, to: string, visible: boolean) => keyframes({
@@ -84,10 +117,10 @@ const Notifications: React.FC = () => {
     if (!data.title && !data.description) return;
 
     const toastId = data.id?.toString();
-    const duration = data.duration || 3000;
+    const duration = data.duration || 6000;
 
     let iconColor: string;
-    let position = data.position || 'top-right';
+    let position = data.position || 'top-center';
 
     data.showDuration = data.showDuration !== undefined ? data.showDuration : true;
 
@@ -106,14 +139,17 @@ const Notifications: React.FC = () => {
     if (!data.icon) {
       switch (data.type) {
         case 'error':
-          data.icon = 'circle-xmark';
+          data.icon = 'triangle-exclamation';
           break;
         case 'success':
           data.icon = 'circle-check';
           break;
         case 'warning':
-          data.icon = 'circle-exclamation';
+          data.icon = 'triangle-exclamation';
           break;
+        case 'money':
+          data.icon = 'sack-dollar';
+          break
         default:
           data.icon = 'circle-info';
           break;
@@ -123,96 +159,63 @@ const Notifications: React.FC = () => {
     if (!data.iconColor) {
       switch (data.type) {
         case 'error':
-          iconColor = 'red.6';
+          iconColor = '#CD2E36'; // Zamiana "red.6" na HEX
           break;
         case 'success':
-          iconColor = 'teal.6';
+          iconColor = '#2ACB70'; // Zamiana "teal.6" na HEX
           break;
         case 'warning':
-          iconColor = 'yellow.6';
+          iconColor = '#E4BA12'; // Zamiana "yellow.6" na HEX
+          break;
+        case 'money':
+          iconColor = '#2ACB70'; // Zamiana "teal.6" na HEX
           break;
         default:
-          iconColor = 'blue.6';
+          iconColor = '#1C5ADF'; // Zamiana "blue.6" na HEX
           break;
       }
     } else {
       iconColor = tinycolor(data.iconColor).toRgbString();
     }
     
-    toast.custom(
-      (t) => (
+    toast.custom((t) => (
+      <div className={`${classes.container}`}>
+        {/* Weather Icon */}
+        <div className={`${classes.iconWrapper}`}>
+          {data.icon && (
+            <ThemeIcon
+              color={ '#141B25'}
+              radius="xl"
+              size={22}
+              variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
+            >
+              <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
+            </ThemeIcon>
+
+          )}
+        </div>
+        
+        <div className={`${classes.textWrapper}`}>
+          <p className={`${classes.title}`}>{data.title} </p>
+          <p className={`${classes.description}`}>{data.description} </p>
+        </div>
+    
+        {/* Auto-dismiss after 14s */}
         <Box
+          className={classes.progress}
           sx={{
-            animation: getAnimation(t.visible, position),
-            ...data.style,
+            background: iconColor, // Przeniesione z `style`
+            "@keyframes width-decrease": {
+              "0%": { width: "300px" },
+              "100%": { width: "65px" },
+            },
+            animation: `width-decrease ${duration}ms linear forwards`,
           }}
-          className={`${classes.container}`}
-        >
-          <Group noWrap spacing={12}>
-            {data.icon && (
-              <>
-                {data.showDuration ? (
-                  <RingProgress
-                    key={toastKey}
-                    size={38}
-                    thickness={2}
-                    sections={[{ value: 100, color: iconColor }]}
-                    style={{ alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'start' }}
-                    styles={{
-                      root: {
-                        '> svg > circle:nth-of-type(2)': {
-                          animation: `${durationCircle} linear forwards reverse`,
-                          animationDuration: `${duration}ms`,
-                        },
-                        margin: -3,
-                      },
-                    }}
-                    label={
-                      <Center>
-                        <ThemeIcon
-                          color={iconColor}
-                          radius="xl"
-                          size={32}
-                          variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
-                        >
-                          <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
-                        </ThemeIcon>
-                      </Center>
-                    }
-                  />
-                ) : (
-                  <ThemeIcon
-                    color={iconColor}
-                    radius="xl"
-                    size={32}
-                    variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
-                    style={{ alignSelf: !data.alignIcon || data.alignIcon === 'center' ? 'center' : 'start' }}
-                  >
-                    <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
-                  </ThemeIcon>
-                )}
-              </>
-            )}
-            <Stack spacing={0}>
-              {data.title && <Text className={classes.title}>{data.title}</Text>}
-              {data.description && (
-                <ReactMarkdown
-                  components={MarkdownComponents}
-                  className={`${!data.title ? classes.descriptionOnly : classes.description} description`}
-                >
-                  {data.description}
-                </ReactMarkdown>
-              )}
-            </Stack>
-          </Group>
-        </Box>
-      ),
-      {
-        id: toastId,
-        duration: duration,
-        position: position,
-      }
-    );
+        ></Box>
+
+
+      </div>
+    ), { duration: duration });
   });
 
   return <Toaster />;

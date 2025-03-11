@@ -4,19 +4,19 @@ import React from 'react';
 const useStyles = createStyles((theme) => ({
   container: {
     textAlign: 'center',
-    borderTopLeftRadius: theme.radius.md,
-    borderTopRightRadius: theme.radius.md,
-    backgroundColor: theme.colors.dark[6],
-    height: 60,
-    width: 384,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+    backgroundColor: '#141B25',
+    color: '#fff',
+    height: 67,
+    width: 388,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   heading: {
-    fontSize: 24,
-    textTransform: 'uppercase',
-    fontWeight: 500,
+    fontSize: 23,
+    fontWeight: 600,
   },
 }));
 
