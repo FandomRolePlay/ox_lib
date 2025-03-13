@@ -158,9 +158,11 @@ function lib.getVehicleProperties(vehicle)
             end
         end
 
-        local modLivery = GetVehicleMod(vehicle, 48)
-        if GetVehicleMod(vehicle, 48) == -1 and GetVehicleLivery(vehicle) ~= 0 then
-            modLivery = GetVehicleLivery(vehicle)
+        local modLiveryCount = GetVehicleLiveryCount(vehicle)
+        local modLivery = GetVehicleLivery(vehicle)
+
+        if modLiveryCount == -1 or modLivery == -1 then
+            modLivery = GetVehicleMod(vehicle, 48)
         end
 
         local tireHealth = {}
