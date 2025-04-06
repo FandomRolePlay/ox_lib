@@ -480,9 +480,11 @@ function lib.setVehicleProperties(vehicle, props, fixVehicle)
                              GetVehicleClass(vehicle) ~= 16 and
                              GetVehicleClass(vehicle) ~= 21 and
                              GetVehicleClass(vehicle) ~= 22
-        if classAllowed and (props.suspensionHeight ~= nil and props.suspensionHeight ~= 0.00) then --  from version 2.0.6
+
+        local vehicleType = GetVehicleTypeRaw(vehicle)
+        if (classAllowed and vehicleType ~= 13) and (props.suspensionHeight ~= nil and props.suspensionHeight ~= 0.00) then --  from version 2.0.6
             SetVehicleSuspensionHeight(vehicle, props.suspensionHeight)
-        elseif props.modSuspension ~= nil then
+        elseif props.modSuspension then
             SetVehicleMod(vehicle, 15, props.modSuspension, false)
         end
         if props.modArmor then
