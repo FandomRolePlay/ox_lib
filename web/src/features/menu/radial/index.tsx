@@ -147,33 +147,33 @@ const RadialMenu: React.FC = () => {
           else if (menu.sub) fetchNui('radialBack');
         }}
       >
-      <ScaleFade visible={visible}>
+       <ScaleFade visible={visible}>
         <svg
           style={{ overflow: 'visible' }}
           width={`${1.5 * newDimension}px`}
           height={`${1.5 * newDimension}px`}
-          viewBox="0 0 525 525"
+          viewBox="0 0 367.5 367.5"
           transform="rotate(90)"
         >
-          <g transform="translate(262.5, 262.5)">
-            <circle r={262.5} className={classes.backgroundCircle} />
+          <g transform="translate(183.75, 183.75)">
+            <circle r={183.75} className={classes.backgroundCircle} />
           </g>
           {menuItems.map((item, index) => {
             const pieAngle = 360 / (menuItems.length < 3 ? 3 : menuItems.length);
             const angle = degToRad(pieAngle / 2 + 90);
-            const gap = 1.5;
-            const radius = 262.5 * 0.65 - gap;
+            const gap = 1.5 * 0.7;
+            const radius = 183.75 * 0.65 - gap;
             const sinAngle = Math.sin(angle);
             const cosAngle = Math.cos(angle);
-            const iconYOffset = splitTextIntoLines(item.label, 15).length > 3 ? 4.5 : 0;
-            const iconX = 262.5 + sinAngle * radius;
-            const iconY = 262.5 + cosAngle * radius + iconYOffset;
-            const iconWidth = Math.min(Math.max(item.iconWidth || 40, 0), 80);
-            const iconHeight = Math.min(Math.max(item.iconHeight || 40, 0), 80);
+            const iconYOffset = splitTextIntoLines(item.label, 15).length > 3 ? 4.5 * 0.7 : 0;
+            const iconX = 183.75 + sinAngle * radius;
+            const iconY = 183.75 + cosAngle * radius + iconYOffset;
+            const iconWidth = Math.min(Math.max(item.iconWidth || 40, 0), 80) * 0.7;
+            const iconHeight = Math.min(Math.max(item.iconHeight || 40, 0), 80) * 0.7;
 
             return (
               <g
-                transform={`rotate(-${index * pieAngle} 262.5 262.5) translate(${sinAngle * gap}, ${cosAngle * gap})`}
+                transform={`rotate(-${index * pieAngle} 183.75 183.75) translate(${sinAngle * gap}, ${cosAngle * gap})`}
                 className={classes.sector}
                 onClick={async () => {
                   const clickIndex = menu.page === 1 ? index : PAGE_ITEMS * (menu.page - 1) - (menu.page - 1) + index;
@@ -184,9 +184,9 @@ const RadialMenu: React.FC = () => {
                 }}
               >
                 <path
-                  d={`M262.5,262.5 l${262.5 - gap},0 A262.5,262.5 0 0,0 ${
-                    262.5 + (262.5 - gap) * Math.cos(-degToRad(pieAngle))
-                  }, ${262.5 + (262.5 - gap) * Math.sin(-degToRad(pieAngle))} z`}
+                  d={`M183.75,183.75 l${183.75 - gap},0 A183.75,183.75 0 0,0 ${
+                    183.75 + (183.75 - gap) * Math.cos(-degToRad(pieAngle))
+                  }, ${183.75 + (183.75 - gap) * Math.sin(-degToRad(pieAngle))} z`}
                 />
                 <g transform={`rotate(${index * pieAngle - 90} ${iconX} ${iconY})`} pointerEvents="none">
                   {typeof item.icon === 'string' && isIconUrl(item.icon) ? (
@@ -199,20 +199,20 @@ const RadialMenu: React.FC = () => {
                     />
                   ) : (
                     <LibIcon
-                      x={iconX - 15}
-                      y={iconY - 15}
+                      x={iconX - 15 * 0.7}
+                      y={iconY - 15 * 0.7}
                       icon={item.icon as IconProp}
-                      width={30}
-                      height={30}
+                      width={30 * 0.7}
+                      height={30 * 0.7}
                       fixedWidth
                     />
                   )}
                   <text
                     x={iconX}
-                    y={iconY + (splitTextIntoLines(item.label, 15).length > 2 ? 22.5 : 42)}
+                    y={iconY + (splitTextIntoLines(item.label, 15).length > 2 ? 22.5 * 0.7 : 42 * 0.7)}
                     fill="#fff"
                     textAnchor="middle"
-                    fontSize={calculateFontSize(item.label) * 1.3}
+                    fontSize={calculateFontSize(item.label) * 1.3 * 0.7}
                     pointerEvents="none"
                     lengthAdjust="spacingAndGlyphs"
                   >
@@ -227,7 +227,7 @@ const RadialMenu: React.FC = () => {
             );
           })}
           <g
-            transform={`translate(262.5, 262.5)`}
+            transform={`translate(183.75, 183.75)`}
             onClick={async () => {
               if (menu.page > 1) await changePage();
               else {
@@ -239,7 +239,7 @@ const RadialMenu: React.FC = () => {
               }
             }}
           >
-            <circle r={30} className={classes.centerCircle} />
+            <circle r={30 * 0.7} className={classes.centerCircle} />
           </g>
         </svg>
         <div className={classes.centerIconContainer}>
@@ -248,7 +248,7 @@ const RadialMenu: React.FC = () => {
             fixedWidth
             className={classes.centerIcon}
             color="#fff"
-            size="2x"
+            size="lg"
           />
         </div>
       </ScaleFade>

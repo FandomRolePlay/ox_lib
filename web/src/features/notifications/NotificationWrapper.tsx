@@ -120,7 +120,8 @@ const Notifications: React.FC = () => {
     const duration = data.duration || 6000;
 
     let iconColor: string;
-    let position = data.position || 'top-center';
+    let position = data.position || 'center-right';
+
 
     data.showDuration = data.showDuration !== undefined ? data.showDuration : true;
 
@@ -215,7 +216,12 @@ const Notifications: React.FC = () => {
 
 
       </div>
-    ), { duration: duration });
+    ), {
+      id: toastId,
+      duration: duration,
+      position: position,
+    });
+
   });
 
   return <Toaster />;
