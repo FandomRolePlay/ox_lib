@@ -36,13 +36,13 @@ const useStyles = createStyles((theme) => ({
   backgroundCircle: {
     fill: theme.colors.basicBg[2],
     stroke: theme.colors.basicBg[2],
-    strokeWidth: 12,
+    strokeWidth: 10,
   },
   centerCircle: {
     fill: theme.colors.mainColor[0],
     color: '#fff',
     stroke: theme.colors.basicBg[2],
-    strokeWidth: 6,
+    strokeWidth: 5,
     '&:hover': {
       cursor: 'pointer',
       fill: '#BA1A26',
@@ -90,7 +90,7 @@ const degToRad = (deg: number) => deg * (Math.PI / 180);
 const RadialMenu: React.FC = () => {
   const { classes } = useStyles();
   const { locale } = useLocales();
-  const newDimension = 350 * 1.1025;
+  const newDimension = 350 * 1.1025 * 0.85;
   const [visible, setVisible] = useState(false);
   const [menuItems, setMenuItems] = useState<RadialMenuItem[]>([]);
   const [menu, setMenu] = useState<{ items: RadialMenuItem[]; sub?: boolean; page: number }>({
