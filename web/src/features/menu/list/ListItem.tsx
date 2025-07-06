@@ -20,7 +20,7 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     marginLeft: 'auto',
     marginRight: 'auto',
     width: 362,
-    height: 55,
+    minHeight: 55,
     border: '2px solid #19212E',
     scrollMargin: 8,
     '&:focus': {
@@ -29,15 +29,19 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     },
   },
   iconImage: {
-    maxWidth: 32,
+    height: 33,
+    width: 33,
   },
   buttonWrapper: {
     color: '#fff',
+    paddingTop: 13,
+    paddingBottom: 13,
     paddingLeft: 12,
-    paddingRight: 16,
+    paddingRight: 12,
     height: '100%',
   },
   iconContainer: {
+    // marginTop: 13,
     display: 'flex',
     alignItems: 'center',
     width: 29,
@@ -47,15 +51,20 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     fontSize: 24,
     color: params.iconColor || theme.colors.mainColor[0],
   },
-  label: {
+  label :{
     color: '#FCFCFC',
     opacity: 0.5,
     fontSize: 13,
-    letterSpacing: 1,
+    letterSpacing: 1.2,
     lineHeight: '12px',
     fontWeight: 300,
     fontFamily: 'Helvetica',
     verticalAlign: 'middle',
+    display: 'inline-block',
+    maxWidth: '25ch',
+    overflowWrap: 'break-word', 
+    wordBreak: 'break-word',
+    whiteSpace: 'normal',
   },
   chevronIcon: {
     width: 18,
@@ -71,9 +80,7 @@ const useStyles = createStyles((theme, params: { iconColor?: string }) => ({
     background: '#12151B',
     height: 30,
     paddingTop: 4,
-
     justifyContent: 'center',
-
     display: 'flex',
     textTransform: 'uppercase',
     fontSize: 14,
@@ -133,13 +140,13 @@ const ListItem = forwardRef<Array<HTMLDivElement | null>, Props>(({ item, index,
                   : item.values[scrollIndex]}
               </Text>
             </Stack>
-            <Group spacing={1} position="center">
-              <LibIcon icon="chevron-left" className={classes.chevronIcon} />
-              <Text className={classes.scrollIndexValue}>
-                {scrollIndex + 1}
-              </Text>
-              <LibIcon icon="chevron-right" className={classes.chevronIcon} />
-            </Group>
+              <Group spacing={1} position="center">
+                <LibIcon icon="chevron-left" className={classes.chevronIcon} />
+                <Text className={classes.scrollIndexValue}>
+                  {scrollIndex + 1}
+                </Text>
+                <LibIcon icon="chevron-right" className={classes.chevronIcon} />
+              </Group>
           </Group>
         ) : item.checked !== undefined ? (
           <Group position="apart" w="100%">

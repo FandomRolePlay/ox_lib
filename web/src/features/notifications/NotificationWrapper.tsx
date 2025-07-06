@@ -12,22 +12,24 @@ import { describe } from 'node:test';
 const useStyles = createStyles((theme) => ({
   container: {
     width: 300,
-    height: 65,
+    minHeight: 65,
     background: theme.colors.basicBg[1],
     color: theme.colors.dark[0],
     fontFamily: 'Helvetica',
     borderRadius: 3,
     display: 'flex',
     alignItems: 'left',
-    // border: '1px solid #19212E', // Poprawiona składnia
+    position: 'relative',
   },
+
 
   iconWrapper: {
     marginTop: 0,
     marginLeft: 0,
-    height: 65,
+    minHeight: 65,
     width: 65,
     borderRadius: '3px 0px 0px 3px',
+    zIndex: 1,
     background: theme.colors.darkerBg[0],
     justifyContent: 'center',
     alignItems: 'center',
@@ -35,13 +37,18 @@ const useStyles = createStyles((theme) => ({
     fontSize: 24,
   },
 
+  icon: {
+    zIndex: 0,
+  },
   title: {
+    maxWidth: 235,
     fontWeight: 600,
     lineHeight: 'normal',
     fontFamily: 'Helvetica',
   },
 
   description: {
+    maxWidth: 225,
     fontWeight: 400,
     lineHeight: 'normal',
     fontFamily: 'Helvetica',
@@ -51,6 +58,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   textWrapper: {
+    paddingTop: 5,
+    paddingBottom: 10,
     marginLeft: 10,
     marginTop: 'auto',
     marginBottom: 'auto',
@@ -60,14 +69,15 @@ const useStyles = createStyles((theme) => ({
   },
 
   progress: {
-    marginTop: 61,
-    marginLeft: 0,
-    marginRight: 'auto',
     position: 'absolute',
-    height: 4,
-    borderRadius: 4,
+    bottom: -0,
+    left: 0,
+    height: 5,
+    width: '100%',
+    borderRadius: '0 3px 3px 3px',
+    overflow: 'hidden',
+    zIndex: 2, // dla pewności
   },
-  
 }));
 
 const createAnimation = (from: string, to: string, visible: boolean) => keyframes({
@@ -121,7 +131,6 @@ const Notifications: React.FC = () => {
 
     let iconColor: string;
     let position = data.position || 'center-right';
-
 
     data.showDuration = data.showDuration !== undefined ? data.showDuration : true;
 
@@ -180,48 +189,43 @@ const Notifications: React.FC = () => {
     }
     
     toast.custom((t) => (
-      <div className={`${classes.container}`}>
-        {/* Weather Icon */}
-        <div className={`${classes.iconWrapper}`}>
-          {data.icon && (
-            <ThemeIcon
-              color={ '#141B25'}
-              radius="xl"
-              size={22}
-              variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
-            >
-              <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
-            </ThemeIcon>
+      <div>
+        <div className={classes.container}>
+          <div className={classes.iconWrapper}>
+            {data.icon && (
+              <ThemeIcon
+                className={classes.icon}
+                color={'#141B25'}
+                radius="xl"
+                size={22}
+                variant={tinycolor(iconColor).getAlpha() < 0 ? undefined : 'light'}
+              >
+                <LibIcon icon={data.icon} fixedWidth color={iconColor} animation={data.iconAnimation} />
+              </ThemeIcon>
+            )}
+          </div>
 
-          )}
-        </div>
-        
-        <div className={`${classes.textWrapper}`}>
-          <p className={`${classes.title}`}>{data.title} </p>
-          <p className={`${classes.description}`}>{data.description} </p>
-        </div>
-    
-        {/* Auto-dismiss after 14s */}
-        <Box
-          className={classes.progress}
-          sx={{
-            background: iconColor, // Przeniesione z `style`
-            "@keyframes width-decrease": {
-              "0%": { width: "300px" },
-              "100%": { width: "65px" },
-            },
-            animation: `width-decrease ${duration}ms linear forwards`,
-          }}
-        ></Box>
+          <div className={classes.textWrapper}>
+            <p className={classes.title}>{data.title}</p>
+            <p className={classes.description}>{data.description}</p>
+          </div>
 
+          <Box
+            className={classes.progress}
+            sx={{
+              background: iconColor,
+              "@keyframes width-decrease": {
+                "0%": { width: "300px" },
+                "100%": { width: "65px" },
+              },
+              animation: `width-decrease ${duration}ms linear forwards`,
+            }}
+          />
+        </div>
 
       </div>
-    ), {
-      id: toastId,
-      duration: duration,
-      position: position,
-    });
-
+    ), { duration, position});
+    
   });
 
   return <Toaster />;

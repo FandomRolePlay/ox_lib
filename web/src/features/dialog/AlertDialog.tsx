@@ -46,6 +46,7 @@ const AlertDialog: React.FC = () => {
         size={dialogData.size || 'md'}
         overflow={dialogData.overflow ? 'inside' : 'outside'}
         closeOnClickOutside={false}
+        style={{ backgroundColor: theme.colors.basicBg[0] }}
         onClose={() => {
           setOpened(false);
           closeAlert('cancel');
@@ -73,9 +74,9 @@ const AlertDialog: React.FC = () => {
               </Button>
             )}
             <Button
+              style={{ backgroundColor: theme.colors.mainColor[0] }}
               uppercase
-              variant={dialogData.cancel ? 'light' : 'default'}
-              color={dialogData.cancel ? theme.primaryColor : undefined}
+              color={ '#fff'}
               onClick={() => closeAlert('confirm')}
             >
               {dialogData.labels?.confirm || locale.ui.confirm}
